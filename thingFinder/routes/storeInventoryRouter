@@ -1,0 +1,75 @@
+// storeInventoryRouter.js
+const express = require("express");
+const storeInventoryRouter = express.Router();
+const uuid = require("uuid").v4;
+const storeInventory = [
+    {
+        name: "banana",
+        type: "food",
+        price: 200,
+        _id: uuid()
+    },{
+        name: "pants",
+        type: "clothing",
+        price: 2500,
+        _id: uuid()
+    },{
+        name: "basket ball",
+        type: "toy",
+        price: 1000,
+        _id: uuid()
+    },{
+        name: "rockem sockem robots",
+        type: "toy",
+        price: 1500,
+        _id: uuid()
+    },{
+        name: "shirt",
+        type: "clothing",
+        price: 800,
+        _id: uuid()
+    },{
+        name: "soup",
+        type: "food",
+        price: 300,
+        _id: uuid()
+    },{
+        name: "flour",
+        type: "food",
+        price: 100,
+        _id: uuid()
+    }
+];
+
+storeInventoryRouter.get("/", (req, res) => {
+    res.send(storeInventory);
+});
+
+storeInventoryRouter.post("/", (req, res) => {
+    const newStoreInventory = req.body;
+    newStoreInventory._id = uuid();
+    storeInventory.push(newStoreInventory);
+    res.send("Added storeInventory");
+});
+storeInventoryRouter.get("/search/type", (req, res) => {
+    const type = req.query.type 
+    const filteredInventory = storeInventory.filter(storeInventory => storeInventory.type === type)
+    res.send(filteredInventory)
+  });
+
+  storeInventoryRouter.get("/search/price", (req, res) => {
+    const minPrice = req.query.minPrice || 0;
+    const maxPrice = req.query.maxPrice || 1000000;
+
+    const filteredInventory = storeInventory.filter(item => item.price >= +minPrice && item.price <= +maxPrice);
+
+    res.send(filteredInventory);
+});
+
+storeInventoryRouter.get("/:id", (req, res) => {
+  const storeInventoryId = req.params.id 
+  const foundStoreInventory = storeInventory.find(storeInventory => storeInventory._id === storeInventoryId)
+  res.send(foundStoreInventory)
+});
+
+module.exports = storeInventoryRouter

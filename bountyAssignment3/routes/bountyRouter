@@ -1,0 +1,42 @@
+// bountyRouter.js
+const express = require("express");
+const { object } = require("prop-types");
+const bountyRouter = express.Router();
+const uuid = require("uuid").v4;
+
+let bounties = [
+    { firstName: "john", lastName: "doe", alive: true, bountyPrice: 100, type: "jedi", _id: uuid() },
+    { firstName: "jane", lastName: "doe", alive: true, bountyPrice: 100, type: "sith", _id: uuid() }
+];
+
+bountyRouter.get("/", (req, res) => {
+    res.send(bounties);
+});
+
+bountyRouter.post("/", (req, res) => {
+    const newBounty = req.body;
+    newBounty._id = uuid();
+    bounties.push(newBounty);
+    res.send(newBounty);
+});
+
+bountyRouter.get("/:id", (req, res) => {
+  const bountyId = req.params.id 
+  const foundBounty = bounties.find(bounty => bounty._id === bountyId)
+  res.send(foundBounty)
+});
+
+bountyRouter.delete("/:id", (req, res ) => {
+    const bountyId = req.params.id 
+    const bountyIndex = bounties.findIndex(bounty => bounty._id === bountyId)
+    bounties.splice(bountyIndex, 1)
+    res.send("deleted")
+})
+
+bountyRouter.put("/:id", (req, res ) => {
+    const bountyId = req.params.id 
+    const bountyIndex = bounties.findIndex(bounty => bounty._id === bountyId)
+    const updatedBounty = Object.assign(bounties[bountyIndex], req.body)
+    res.send(updatedBounty)
+})
+module.exports = bountyRouter
